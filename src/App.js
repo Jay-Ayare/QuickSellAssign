@@ -1,25 +1,28 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from 'react';
+import KanbanBoard from './KanbanBoard';
+import GroupSelector from './GroupSelector';
 
-function App() {
+const App = () => {
+  const [tickets, setTickets] = useState([]);
+  const [users, setUsers] = useState([]);
+  const [groupBy, setGroupBy] = useState('status'); // Initial grouping by status
+
+  useEffect(() => {
+    // Fetch API data
+    fetch('https://api.quicksell.co/v1/internal/frontend-assignment')
+      .then(response => response.json())
+      .then(data => {
+        setTickets(data.tickets);
+        setUsers(data.users);
+      });
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="app-container">
+      <GroupSelector groupBy={groupBy} setGroupBy={setGroupBy} />
+      <KanbanBoard tickets={tickets} users={users} groupBy={groupBy} />
     </div>
   );
-}
+};
 
 export default App;
